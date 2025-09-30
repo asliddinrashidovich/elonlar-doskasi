@@ -1,0 +1,26 @@
+{
+  "name": "elonlar-doskasi",
+  "version": "1.0.0",
+  "description": "E'lonlar doskasi sayti full stack web site",
+  "keywords": [
+    "e'lonlar",
+    "olx"
+  ],
+  "license": "ISC",
+  "author": "Asliddin Norboyev",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
