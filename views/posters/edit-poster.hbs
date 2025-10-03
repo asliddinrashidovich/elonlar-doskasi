@@ -2,18 +2,18 @@
           <div class="row">
             <div class="col-lg-12">
               <div class="card p-4 mb-5">
-                <form action="/posters/add" method="POST">
+                <form action="/posters/{{poster.id}}/edit" method="POST">
                   <div class="mb-3">
                     <label for="title" class="form-label">E'lon sarlavhasi</label>
-                    <input type="text" name="title" class="form-control" placeholder="Noutbuk Acer" id="email">
+                    <input value="{{poster.title}}" type="text" name="title" class="form-control" placeholder="Noutbuk Acer" id="email">
                   </div>
                   <div class="mb-3">
                     <label for="amount" class="form-label">Narxi (so'mda)</label>
-                    <input type="number" name="amount" class="form-control" placeholder="500 000" id="amount">
+                    <input value="{{poster.amount}}" type="number" name="amount" class="form-control" placeholder="500 000" id="amount">
                   </div>
                   <div class="mb-3">
                     <label for="region" class="form-label">Hudud</label>
-                    <select class="form-select" name="region" id="region" aria-label="Default select example">
+                    <select value="{{poster.region}}" class="form-select" name="region" id="region" aria-label="Default select example">
                       <option selected>Hududni tanlang</option>
                       <option value="Toshkent">Toshkent</option>
                       <option value="Qarshi">Qarshi</option>
@@ -31,17 +31,17 @@
                   </div>
                   <div class="mb-3">
                     <label for="image" class="form-label">Rasm tanlang</label>
-                    <input class="form-control" name="image" type="text" id="image">
+                    <input  value="{{poster.image}}" class="form-control" name="image" type="text" id="image">
                   </div>
                   <div class="mb-3">
                     <label for="description" class="form-label">Tarif</label>
-                    <textarea name="description"></textarea>
+                    <textarea name="description">{{poster.description}}</textarea>
                     <script>
                       CKEDITOR.replace( 'description' );
                     </script>
                   </div>
                   <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">Registratsiya</button>
+                    <button type="submit" class="btn btn-primary">O'zgartirish</button>
                   </div>
                 </form>
               </div>
