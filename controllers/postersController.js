@@ -1,75 +1,94 @@
-const { v4 } = require("uuid")
-const { addNewPosterToDB, getAllPosters, getPosterByID, editPosterBydId, deletePosterById } = require("../db/posters")
+const {
+  getAllPosters,
+  getPosterByID,
+  editPosterBydId,
+  deletePosterById,
+} = require("../db/posters");
+const Poster = require("../modules/postersModule");
 
 const posterController = async (req, res) => {
-    const posters = await getAllPosters()
+  try {
+    const posters = await Poster.find().lean();
     res.render("posters/posters", {
-        title: "posters",
-        url: process.env.URL,
-        posters
-    })
-}
+      title: "posters",
+      url: process.env.URL,
+      posters: posters.reverse(),
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const getOnePoster = async (req, res) => {
-    const poster = await getPosterByID(req.params.id)
+  try {
+    const poster = await Poster.findById(req.params.id).lean();
     res.render("posters/one", {
-        title: poster.title,
-        poster
-    })
-}
+      title: poster?.title,
+      poster,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const updatePoster = async (req, res) => {
+  try {
     const editedPoster = {
-        title: req.body.title,
-        amount: req.body.amount,
-        image: req.body.image,
-        region: req.body.region,
-        description: req.body.description,
-    }
-    await editPosterBydId(req.params.id, editedPoster)
-    res.redirect("/posters")
-}
+      title: req.body.title,
+      amount: req.body.amount,
+      image: req.body.image,
+      region: req.body.region,
+      description: req.body.description,
+    };
+    await Poster.findByIdAndUpdate(req.params.id, editedPoster).lean();
+    res.redirect("/posters");
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const deletePoster = async (req, res) => {
-    await deletePosterById(req.params.id)
-    res.redirect("/posters")
-}
+  await Poster.findByIdAndDelete(req.params.id).lean();
+  res.redirect("/posters");
+};
 
 const getEditPosterPage = async (req, res) => {
-    const poster = await getPosterByID(req.params.id)
-    res.render("posters/edit-poster", {
-        title: "Edit poster",
-        poster
-    })
-}
+  const poster = await Poster.findById(req.params.id).lean();
+  res.render("posters/edit-poster", {
+    title: "Edit poster",
+    poster,
+  });
+};
 
 const addPosterController = (req, res) => {
-    res.render("posters/add-posters", {
-        title: "Add posters",
-        url: process.env.URL
-    })
-}
+  res.render("posters/add-posters", {
+    title: "Add posters",
+    url: process.env.URL,
+  });
+};
 
 const addNewPosterController = async (req, res) => {
+  try {
     const poster = {
-        id: v4(),
-        title: req.body.title,
-        amount: req.body.amount,
-        region: req.body.region,
-        image: req.body.image,
-        description: req.body.description
-    }
-    await addNewPosterToDB(poster)
-    res.redirect("/")
-}
-
+      title: req.body.title,
+      amount: req.body.amount,
+      region: req.body.region,
+      image: req.body.image,
+      description: req.body.description,
+    };
+    await Poster.create(poster);
+    res.redirect("/posters");
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports = {
-    posterController,
-    addPosterController,
-    addNewPosterController,
-    getOnePoster,
-    getEditPosterPage,
-    updatePoster,
-    deletePoster
-}
+  posterController,
+  addPosterController,
+  addNewPosterController,
+  getOnePoster,
+  getEditPosterPage,
+  updatePoster,
+  deletePoster,
+};
