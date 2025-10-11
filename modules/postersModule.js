@@ -26,6 +26,10 @@ const postersScheme = new Schema({
         type: Boolean,
         required: true,
         default: true
+    },
+    visits: {
+        type: Number,
+        default: 1
     }
 })
 

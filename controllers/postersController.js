@@ -1,9 +1,3 @@
-const {
-  getAllPosters,
-  getPosterByID,
-  editPosterBydId,
-  deletePosterById,
-} = require("../db/posters");
 const Poster = require("../modules/postersModule");
 
 const posterController = async (req, res) => {
@@ -21,9 +15,10 @@ const posterController = async (req, res) => {
 
 const getOnePoster = async (req, res) => {
   try {
-    const poster = await Poster.findById(req.params.id).lean();
+    const poster = await Poster.findByIdAndUpdate(req.params.id, { $inc: { visits: 1 }}, { new: true }).lean();
     res.render("posters/one", {
       title: poster?.title,
+      url: process.env.URL,
       poster,
     });
   } catch (error) {
@@ -68,12 +63,13 @@ const addPosterController = (req, res) => {
 };
 
 const addNewPosterController = async (req, res) => {
+  console.log(req.file);
   try {
     const poster = {
       title: req.body.title,
       amount: req.body.amount,
       region: req.body.region,
-      image: req.body.image,
+      image: "uploads/" + req.file.filename,
       description: req.body.description,
     };
     await Poster.create(poster);

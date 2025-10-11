@@ -5,7 +5,7 @@
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="card">
-                      <img src="{{poster.image}}" class="rounded mt-lg-3 mb-lg-3 img-fluid img-poster-page mx-auto d-block" alt="...">
+                      <img src="{{url}}/{{poster.image}}" class="rounded mt-lg-3 mb-lg-3 img-fluid img-poster-page mx-auto d-block" alt="...">
                     </div>
                   </div>
                 </div>
@@ -20,11 +20,12 @@
                             <h3 class="poster-page-title">{{poster.title}}</h3>
                             <h1 class="poster-page-amount mb-5">{{poster.amount}} SO'M</h1>
                             <h5>Tavsif</h5>
-                            <p>{{poster.description}}</p>
+                            {{{poster.description}}}
+
                               <hr>
                               <div class="d-flex justify-content-between">
-                                <p>ID: 45646897</p>
-                                <p>Ko'rildi: 1025</p>
+                                <p>ID: {{poster._id}}</p>
+                                <p>Ko'rildi: {{poster.visits}}</p>
                               </div>
                           </div>
                         </div>
