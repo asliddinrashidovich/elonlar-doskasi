@@ -1,4 +1,5 @@
 const User = require("../modules/authModule")
+const bcrypt = require("bcrypt")
 
 // get login page
 const getLoginPage = (req,res) => {
@@ -20,6 +21,8 @@ const getRegisterPage = (req,res) => {
 const registerNewUser = async (req,res) => {
     try {
         const {email, password, phone, username, password2} = req.body
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(password, salt)
         const isExist = await User.findOne({email})
 
         if(isExist) {
@@ -32,7 +35,7 @@ const registerNewUser = async (req,res) => {
 
         await User.create({
             email,
-            password,
+            password: hashPassword,
             username,
             phone,
         })
@@ -51,7 +54,7 @@ const loginUser = async (req, res) => {
         const isExist = await User.findOne({email})
 
         if(isExist) {
-            const matchPassword = isExist.password === password
+            const matchPassword = bcrypt.compare(password, isExist.password)
             if(matchPassword) {
                 req.session.user = isExist,
                 req.session.isLogged = true,
