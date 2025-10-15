@@ -20,7 +20,13 @@ const userModule = new Schema({
     phone: {
         type: String,
         required: true
-    }
+    },
+    posters: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Poster"
+        }
+    ]
 }, {
     timestamps: true
 })

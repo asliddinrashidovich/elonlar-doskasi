@@ -1,4 +1,5 @@
 const Poster = require("../modules/postersModule");
+const User = require("../modules/authModule");
 
 const posterController = async (req, res) => {
   try {
@@ -19,6 +20,7 @@ const getOnePoster = async (req, res) => {
     res.render("posters/one", {
       title: poster?.title,
       url: process.env.URL,
+      user: req.session.user,
       poster,
     });
   } catch (error) {
@@ -63,17 +65,21 @@ const addPosterController = (req, res) => {
 };
 
 const addNewPosterController = async (req, res) => {
-  console.log(req.file);
   try {
-    const poster = {
+    const newPoster = new Poster({
       title: req.body.title,
       amount: req.body.amount,
       region: req.body.region,
       image: "uploads/" + req.file.filename,
       description: req.body.description,
-    };
-    await Poster.create(poster);
-    res.redirect("/posters");
+    })
+    await User.findByIdAndUpdate(req.session.user._id, 
+      { $push: {posters: newPoster._id}},
+      { new: true, upsert: true}
+    )
+    const savedPoster = await newPoster.save();
+    res.redirect("/posters/" + savedPoster._id);
+
   } catch (error) {
     console.log(error);
   }
