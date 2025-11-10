@@ -9,11 +9,11 @@
             <div class="search-item m-2">
                 <label for="category" class="form-label">Kategoriya</label>
                 <select name="category" class="form-select mx-2" id="category" aria-label="Default select example">
-                <option selected>Kategoriyani tanlang</option>
-                <option value="1">Ko'chmas mulk</option>
-                <option value="2">Transport</option>
-                <option value="3">Elektronika</option>
-                <option value="4">Ish o'rinlari</option>
+                <option selected disabled>Kategoriyani tanlang</option>
+                <option value="realty">Ko'chmas mulk</option>
+                <option value="transport">Transport</option>
+                <option value="electronics">Elektronika</option>
+                <option value="jobs">Ish o'rinlari</option>
                 </select>
             </div>
             <div class="search-item m-2">
@@ -26,7 +26,7 @@
             <div class="search-item m-2">
                 <label for="region" class="form-label">Hudud</label>
                 <select name="region" class="form-select" id="region" aria-label="Default select example">
-                <option selected>Hududni tanlang</option>
+                <option selected disabled>Hududni tanlang</option>
                 <option value="Toshkent">Toshkent</option>
                 <option value="Qarshi">Qarshi</option>
                 <option value="Buxoro">Buxoro</option>
@@ -134,7 +134,7 @@
                 </div>
             </div> --}}
             <nav aria-label="Page navigation example">
-                <ul class="pagination pagination-lg justify-content-center">
+                {{!-- <ul class="pagination pagination-lg justify-content-center">
                 <li class="page-item disabled">
                     <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
                 </li>
@@ -144,7 +144,19 @@
                 <li class="page-item">
                     <a class="page-link" href="#">Next</a>
                 </li>
+                </ul> --}}
+                  <ul class="pagination pagination-lg justify-content-center">
+                    {{#paginate pagination type="previous"}}
+                    <li {{#if disabled}}class="page-item disabled"{{/if}}><a class="page-link" href="?page={{n}}&limit=4">Prev</a></li>
+                    {{/paginate}}
+                    {{#paginate pagination type="middle" limit="7"}}
+                    <li {{#if active}}class="page-item active"{{/if}}><a class="page-link" href="?page={{n}}&limit=4">{{n}}</a></li>
+                    {{/paginate}}
+                    {{#paginate pagination type="next"}}
+                    <li {{#if disabled}}class="page-item disabled"{{/if}}><a class="page-link" href="?page={{n}}&limit=4">Next</a></li>
+                    {{/paginate}}
                 </ul>
+
             </nav>
             </div>
         </div>

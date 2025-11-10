@@ -3,13 +3,12 @@ const User = require("../modules/authModule");
 // get User page
 const getProfilePage = async (req, res) => {
   try {
-    const userProfile = await User.findOne({ username: req.params.username })
-      .populate("posters")
-      .lean();
+    const userProfile = await User.findOne({ username: req.params.username }).populate("posters").lean();
 
+      console.log("userProfile._id", userProfile._id)
     let isMe = false;
     if (req.session.user) {
-      isMe = userProfile._id == req.session.user._id.toString();
+      isMe = userProfile._id.toString() == req.session.user._id.toString();
     }
     res.render("user/profile", {
       title: `${userProfile.username}`,
@@ -26,4 +25,16 @@ const getProfilePage = async (req, res) => {
   }
 };
 
-module.exports = getProfilePage;
+const updateProfile = async (req, res) => {
+  try {
+    res.render("user/update", {
+      title: req.session.user.username,
+      user: req.session.user,
+      isAuth: req.session.isLogged,
+      url: process.env.URL,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+module.exports = { getProfilePage, updateProfile };

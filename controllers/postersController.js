@@ -1,8 +1,18 @@
 const Poster = require("../modules/postersModule");
 const User = require("../modules/authModule");
+const filtering = require("../utils/filtering");
 
 const posterController = async (req, res) => {
   try {
+    const pageLimit = 10
+    const page = parseInt(req.query.page)
+    const limit = parseInt(req.query.limit)
+    const total = await Poster.countDocuments()
+    
+    // redirect
+    if(req.url === "/") {
+      return res.redirect(`?page=1&limit=${pageLimit}`)
+    }
     if (req.query.search) {
       const { search } = req.query;
       const posters = await Poster.searchPartial(search).lean();
@@ -12,16 +22,39 @@ const posterController = async (req, res) => {
         url: process.env.URL,
         posters: posters.reverse(),
         querySearch: req.query.search,
-        user: req.session.user
+        user: req.session.user,
       });
-      // const searchResults = await Poster.find({title: req.query.search})
     }
-    const posters = await Poster.find().lean();
-    res.render("posters/posters", {
+
+    if (!req.query.limit || !req.query.page) {
+      const { from, to, region } = req.query;
+
+      const filterings = filtering(from, to, region);
+      const posters = await Poster.find(filterings).lean();
+      return res.render("posters/searchResult", {
+        title: "Filter results",
+        url: process.env.URL,
+        posters: posters.reverse(),
+        querySearch: req.query.search,
+        user: req.session.user,
+      });
+    }
+    const posters = await Poster
+      .find()
+      .sort({createdAt: -1})
+      .skip((page*limit)-limit)
+      .limit(limit)  
+      .lean()
+    return res.render("posters/posters", {
       title: "posters",
+      pagination: {
+        page,
+        limit,
+        pageCount: Math.ceil(total/limit)
+      },
       url: process.env.URL,
       posters: posters.reverse(),
-      user: req.session.user
+      user: req.session.user,
     });
   } catch (error) {
     console.log(error);
