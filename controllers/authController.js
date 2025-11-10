@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt")
 const getLoginPage = (req,res) => {
     res.render("auth/login", {
         title: "Login",
+        loginError: req.flash("loginError"),
         url: process.env.URL
     })
 }
@@ -13,6 +14,7 @@ const getLoginPage = (req,res) => {
 const getRegisterPage = (req,res) => {
     res.render("auth/signup", {
         title: "Signup",
+        regError: req.flash("regError"),
         url: process.env.URL
     })
 }
@@ -26,10 +28,12 @@ const registerNewUser = async (req,res) => {
         const isExist = await User.findOne({email})
 
         if(isExist) {
+            req.flash("regError", "Bunday foydalanuvchi bazada bor")
             return res.redirect("/auth/signup")
         }
 
         if(password !== password2) {
+            req.flash("regError", "Parollar mos tushmayabdi")
             return res.redirect("/auth/signup")
         }
 
@@ -47,7 +51,6 @@ const registerNewUser = async (req,res) => {
 }
 
 // login method 
-
 const loginUser = async (req, res) => {
     try {
         const {email, password} = req.body
@@ -63,9 +66,11 @@ const loginUser = async (req, res) => {
                     res.redirect(`/profile/${req.session.user.username}`)
                 })
             } else {
+                req.flash("loginError", "Noto'g'ri ma'lomot kiritildi")
                 res.redirect("/auth/login")
             }
         } else {
+            req.flash("loginError", "Bunday foydalanuvchi topilmadi")
             res.redirect("/auth/login")
         }
     } catch (error) {

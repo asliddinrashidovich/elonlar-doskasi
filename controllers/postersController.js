@@ -3,11 +3,25 @@ const User = require("../modules/authModule");
 
 const posterController = async (req, res) => {
   try {
+    if (req.query.search) {
+      const { search } = req.query;
+      const posters = await Poster.searchPartial(search).lean();
+
+      return res.status(200).render("posters/searchResult", {
+        title: "Search results",
+        url: process.env.URL,
+        posters: posters.reverse(),
+        querySearch: req.query.search,
+        user: req.session.user
+      });
+      // const searchResults = await Poster.find({title: req.query.search})
+    }
     const posters = await Poster.find().lean();
     res.render("posters/posters", {
       title: "posters",
       url: process.env.URL,
       posters: posters.reverse(),
+      user: req.session.user
     });
   } catch (error) {
     console.log(error);
@@ -16,11 +30,18 @@ const posterController = async (req, res) => {
 
 const getOnePoster = async (req, res) => {
   try {
-    const poster = await Poster.findByIdAndUpdate(req.params.id, { $inc: { visits: 1 }}, { new: true }).lean();
+    const poster = await Poster.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { visits: 1 } },
+      { new: true }
+    )
+      .populate("author")
+      .lean();
     res.render("posters/one", {
       title: poster?.title,
       url: process.env.URL,
       user: req.session.user,
+      author: poster.author,
       poster,
     });
   } catch (error) {
@@ -71,15 +92,16 @@ const addNewPosterController = async (req, res) => {
       amount: req.body.amount,
       region: req.body.region,
       image: "uploads/" + req.file.filename,
+      author: req.session.user._id,
       description: req.body.description,
-    })
-    await User.findByIdAndUpdate(req.session.user._id, 
-      { $push: {posters: newPoster._id}},
-      { new: true, upsert: true}
-    )
+    });
+    await User.findByIdAndUpdate(
+      req.session.user._id,
+      { $push: { posters: newPoster._id } },
+      { new: true, upsert: true }
+    );
     const savedPoster = await newPoster.save();
     res.redirect("/posters/" + savedPoster._id);
-
   } catch (error) {
     console.log(error);
   }

@@ -1,14 +1,14 @@
 <div class="container mt-5">
     <div class="card my-5 py-4 text-center border-0">
     <div class="card-body">
-        <form class="row g-3">
+        <form class="row g-3" method="GET" action="/posters">
             <label for="search" class="visually-hidden">Qidiruv</label>
-            <input type="text" class="form-control form-control-lg" id="search" placeholder="E'lonlar qidiruvi...">
+            <input type="text" value="{{querySearch}}" name="search" class="form-control form-control-lg" id="search" placeholder="E'lonlar qidiruvi...">
             <h3>Filtrlash</h3>
             <div class="search-filter">
             <div class="search-item m-2">
                 <label for="category" class="form-label">Kategoriya</label>
-                <select class="form-select mx-2" id="category" aria-label="Default select example">
+                <select name="category" class="form-select mx-2" id="category" aria-label="Default select example">
                 <option selected>Kategoriyani tanlang</option>
                 <option value="1">Ko'chmas mulk</option>
                 <option value="2">Transport</option>
@@ -19,13 +19,13 @@
             <div class="search-item m-2">
                 <label for="amount" class="form-label">Narxi</label>
                 <div class="input-group">
-                <input type="text" id="amount" class="form-control price-input-filter mx-2" placeholder="dan">
-                <input type="text" id="amount" class="form-control price-input-filter mx-2" placeholder="gacha">
+                <input name="from" type="number" id="amount" class="form-control price-input-filter mx-2" placeholder="dan">
+                <input name="to" type="number" id="amount" class="form-control price-input-filter mx-2" placeholder="gacha">
                 </div>
             </div>
             <div class="search-item m-2">
                 <label for="region" class="form-label">Hudud</label>
-                <select class="form-select" id="region" aria-label="Default select example">
+                <select name="region" class="form-select" id="region" aria-label="Default select example">
                 <option selected>Hududni tanlang</option>
                 <option value="Toshkent">Toshkent</option>
                 <option value="Qarshi">Qarshi</option>
@@ -61,7 +61,7 @@
                 <div class="card mb-3">
                     <div class="row g-0">
                     <div class="col-md-3">
-                        <a href="" class="poster-link"><img src="{{../url}}/{{image}}" class="img-fluid rounded-start img-board" alt="..."></a>
+                        <a href="/posters/{{_id}}" class="poster-link"><img src="{{../url}}/{{image}}" class="img-fluid rounded-start img-board" alt="..."></a>
                     </div>
                     <div class="col-md-9">
                         <div class="card-body flex-poster-body">

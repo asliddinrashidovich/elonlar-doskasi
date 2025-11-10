@@ -30,8 +30,36 @@ const postersScheme = new Schema({
     visits: {
         type: Number,
         default: 1
+    },
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
     }
 })
 
+// createing index
+postersScheme.index({
+    title: "text",
+    description: "text"
+})
+
+postersScheme.statics = {
+    searchPartial: function(q){
+        return this.find({
+            $or: [
+                { "title": new RegExp(q, "gi")} ,
+                { "description": new RegExp(q, "gi")} 
+            ]
+        })
+    },
+    searchFull: function(q){
+        return this.find({
+            $text: {
+                $search: q,
+                $caseSensitive: false
+            }
+        })
+    }
+}
 
 module.exports = model("Poster", postersScheme)

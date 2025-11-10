@@ -4,10 +4,13 @@ const dotenv = require("dotenv")
 const session = require("express-session")
 const MongoStore= require("connect-mongodb-session")(session)
 const { engine } = require("express-handlebars")
+const Handlebars = require("handlebars")
 const homeRoutes = require("./routes/homeRoutes")
+const flash = require("connect-flash")
 const postersRoutes = require("./routes/postersRoutes")
 const profileRoutes = require("./routes/profileRoutes")
 const authRoutes = require("./routes/authRoutes")
+const helpers = require("./utils/hbsHelpers")
 const connectDB = require("./config/db")
 const app = express()
 
@@ -19,25 +22,30 @@ const PORT = process.env.PORT || 3000
 connectDB()
 
 // Initilaze session storage
-
 const store = new MongoStore({
     collection: "session",
     uri: process.env.MONGODB_URL
 })
+
 
 // config express 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, "public")))
 
-// session use
+// register handle bars
+helpers(Handlebars)
 
+
+// session use
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store
 }))
+
+app.use(flash())
 
 // connect handlebars
 app.engine(".hbs", engine({extname: ".hbs"}))
