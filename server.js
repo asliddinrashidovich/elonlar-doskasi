@@ -7,6 +7,8 @@ const { engine } = require("express-handlebars")
 const Handlebars = require("handlebars")
 const homeRoutes = require("./routes/homeRoutes")
 const flash = require("connect-flash")
+const helmet = require("helmet")
+const compression = require("compression")
 const postersRoutes = require("./routes/postersRoutes")
 const profileRoutes = require("./routes/profileRoutes")
 const authRoutes = require("./routes/authRoutes")
@@ -46,6 +48,8 @@ app.use(session({
 }))
 
 app.use(flash())
+app.use(helmet())
+app.use(compression())
 
 // connect handlebars
 app.engine(".hbs", engine({extname: ".hbs"}))
